@@ -53,7 +53,7 @@ class OAuth2ServerServiceProvider extends ServiceProvider
     public function registerAuthorizer()
     {
         $this->app->bindShared('oauth2-server.authorizer', function ($app) {
-
+            $config = $app['config']->get('oauth2-server-laravel::oauth2');
             $checker = $app->make('League\OAuth2\Server\ResourceServer');
 
             $authorizer = new Authorizer($checker);
