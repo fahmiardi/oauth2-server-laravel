@@ -30,7 +30,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-v4": "4.1.x-dev"
+            "dev-v4": "4.1.0-dev"
         }
     },
     "license": "MIT"
