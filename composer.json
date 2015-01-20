@@ -20,7 +20,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "laravel/framework": "5.0.*",
+        "laravel/framework": "4.2.*",
         "fahmiardi/oauth2-server-storage-redis": "0.1.*@dev"
     },
     "autoload": {
