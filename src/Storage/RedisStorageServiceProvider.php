@@ -13,6 +13,11 @@ namespace LucaDegasperi\OAuth2Server\Storage;
 
 use Illuminate\Support\ServiceProvider;
 use Fahmiardi\OAuth2\Server\Storage\Util\RedisCapsule;
+use Fahmiardi\OAuth2\Server\Storage\Redis\RedisAccessToken;
+use Fahmiardi\OAuth2\Server\Storage\Redis\RedisClient;
+use Fahmiardi\OAuth2\Server\Storage\Redis\RedisScope;
+use Fahmiardi\OAuth2\Server\Storage\Redis\RedisSession;
+
 use Illuminate\Contracts\Exception\Handler;
 
 class RedisStorageServiceProvider extends ServiceProvider
