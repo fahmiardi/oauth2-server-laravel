@@ -18,7 +18,7 @@ The package assumes you have a good-enough knowledge of the principles behind th
  4.0.x    | 1.0.x        |>= 5.3
  4.1.x    | 1.0.x        |>= 5.3
  4.2.x    | 3.0.x        |>= 5.4
- 5.0.x    | 4.0.x@dev    |>= 5.4
+ 4.2.x    | 4.0.x@dev    |>= 5.4
 
 ## Documentation
 
