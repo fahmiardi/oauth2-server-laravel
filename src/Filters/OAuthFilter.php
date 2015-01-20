@@ -11,7 +11,6 @@
 
 namespace LucaDegasperi\OAuth2Server\Filters;
 
-use League\OAuth2\Server\Exception\InvalidScopeException;
 use LucaDegasperi\OAuth2Server\Authorizer;
 
 class OAuthFilter
@@ -76,24 +75,6 @@ class OAuthFilter
         }
         $this->authorizer->validateAccessToken($this->httpHeadersOnly);
         $this->validateScopes();
-    }
-
-    /**
-     * Set the scopes to which the filter should check for
-     * @param array $scopes
-     */
-    public function setScopes(array $scopes)
-    {
-        $this->scopes = $scopes;
-    }
-
-    /**
-     * The scopes to which the filter should check for
-     * @return array
-     */
-    public function getScopes()
-    {
-        return $this->scopes;
     }
 
     /**

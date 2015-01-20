@@ -11,20 +11,12 @@
 
 namespace LucaDegasperi\OAuth2Server;
 
-use League\OAuth2\Server\AuthorizationServer as Issuer;
-use League\OAuth2\Server\Exception\AccessDeniedException;
 use League\OAuth2\Server\ResourceServer as Checker;
 use League\OAuth2\Server\TokenType\TokenTypeInterface;
-use League\OAuth2\Server\Util\RedirectUri;
 use Symfony\Component\HttpFoundation\Request;
 
 class Authorizer
 {
-    /**
-     * The authorization server (aka the issuer)
-     * @var \League\OAuth2\Server\AuthorizationServer
-     */
-    protected $issuer;
 
     /**
      * The resource server (aka the checker)
@@ -33,34 +25,12 @@ class Authorizer
     protected $checker;
 
     /**
-     * The auth code request parameters
-     * @var array
-     */
-    protected $authCodeRequestParams;
-
-    /**
-     * The redirect uri generator
-     */
-    protected $redirectUriGenerator = null;
-
-    /**
      * Create a new Authorizer instance
-     * @param Issuer $issuer
      * @param Checker $checker
      */
-    public function __construct(Issuer $issuer, Checker $checker)
+    public function __construct(Checker $checker)
     {
-        $this->issuer = $issuer;
         $this->checker = $checker;
-        $this->authCodeRequestParams = [];
-    }
-
-    /**
-     * @return \League\OAuth2\Server\AuthorizationServer
-     */
-    public function getIssuer()
-    {
-        return $this->issuer;
     }
 
     /**
@@ -69,95 +39,6 @@ class Authorizer
     public function getChecker()
     {
         return $this->checker;
-    }
-
-    /**
-     * Issue an access token if the request parameters are valid
-     * @return array a response object for the protocol in use
-     */
-    public function issueAccessToken()
-    {
-        return $this->issuer->issueAccessToken();
-    }
-
-    /**
-     * Get the Auth Code request parameters
-     * @return array
-     */
-    public function getAuthCodeRequestParams()
-    {
-        return $this->authCodeRequestParams;
-    }
-
-    /**
-     * Get a single parameter from the auth code request parameters
-     * @param $key
-     * @param null $default
-     * @return mixed
-     */
-    public function getAuthCodeRequestParam($key, $default = null)
-    {
-        if(array_key_exists($key, $this->authCodeRequestParams)) {
-            return $this->authCodeRequestParams[$key];
-        }
-        return $default;
-    }
-
-    /**
-     * Check the validity of the auth code request
-     * @return null a response appropriate for the protocol in use
-     */
-    public function checkAuthCodeRequest()
-    {
-        $this->authCodeRequestParams = $this->issuer->getGrantType('authorization_code')->checkAuthorizeParams();
-    }
-
-    /**
-     * Issue an auth code
-     * @param string $ownerType the auth code owner type
-     * @param string $ownerId the auth code owner id
-     * @param array $params additional parameters to merge
-     * @return string the auth code redirect url
-     */
-    public function issueAuthCode($ownerType, $ownerId, $params = array())
-    {
-        $params = array_merge($this->authCodeRequestParams, $params);
-        return $this->issuer->getGrantType('authorization_code')->newAuthorizeRequest($ownerType, $ownerId, $params);
-    }
-
-    /**
-     * Generate a redirect uri when the auth code request is denied by the user
-     * @return string a correctly formed url to redirect back to
-     */
-    public function authCodeRequestDeniedRedirectUri()
-    {
-        $error = new AccessDeniedException;
-        return $this->getRedirectUriGenerator()->make($this->getAuthCodeRequestParam('redirect_uri'), [
-                        'error' =>  $error->errorType,
-                        'error_description' =>  $error->getMessage()
-                ]
-        );
-    }
-
-    /**
-     * get the RedirectUri generator instance
-     * @return RedirectUri
-     */
-    public function getRedirectUriGenerator()
-    {
-        if(is_null($this->redirectUriGenerator)) {
-            $this->redirectUriGenerator = new RedirectUri();
-        }
-        return $this->redirectUriGenerator;
-    }
-
-    /**
-     * Set the RedirectUri generator instance
-     * @param $redirectUri
-     */
-    public function setRedirectUriGenerator($redirectUri)
-    {
-        $this->redirectUriGenerator = $redirectUri;
     }
 
     /**
@@ -223,7 +104,6 @@ class Authorizer
      */
     public function setRequest(Request $request)
     {
-        $this->issuer->setRequest($request);
         $this->checker->setRequest($request);
     }
 
@@ -233,7 +113,6 @@ class Authorizer
      */
     public function setTokenType(TokenTypeInterface $tokenType)
     {
-        $this->issuer->setTokenType($tokenType);
         $this->checker->setTokenType($tokenType);
     }
 }
