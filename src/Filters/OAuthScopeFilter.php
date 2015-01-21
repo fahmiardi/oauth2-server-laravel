@@ -12,14 +12,10 @@
 namespace LucaDegasperi\OAuth2Server\Filters;
 
 use League\OAuth2\Server\Exception\InvalidScopeException;
+use LucaDegasperi\OAuth2Server\Authorizer;
 
 class OAuthScopeFilter extends OAuthFilter
 {
-    /**
-     * The scopes to check for
-     * @var array
-     */
-    protected $scopes = [];
 
     /**
      * Run the oauth filter

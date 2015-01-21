@@ -33,6 +33,8 @@ class OAuthFilter
      */
     public function __construct(Authorizer $authorizer, $httpHeadersOnly = false)
     {
+        $authorizer->validateAccessToken($this->httpHeadersOnly);
+        
         $this->authorizer = $authorizer;
         $this->httpHeadersOnly = $httpHeadersOnly;
     }
@@ -54,6 +56,6 @@ class OAuthFilter
      */
     public function filter()
     {
-        $this->authorizer->validateAccessToken($this->httpHeadersOnly);
+        
     }
 }

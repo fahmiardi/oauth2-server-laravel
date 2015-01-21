@@ -83,12 +83,14 @@ class OAuth2ServerServiceProvider extends ServiceProvider
             return new OAuthFilter($app['oauth2-server.authorizer'], $httpHeadersOnly);
         });
 
-        $this->app->bindShared('LucaDegasperi\OAuth2Server\Filters\OAuthScopeFilter', function () {
-            return new OAuthScopeFilter();
+        $this->app->bindShared('LucaDegasperi\OAuth2Server\Filters\OAuthScopeFilter', function ($app) {
+            $httpHeadersOnly = $app['config']->get('oauth2-server-laravel::oauth2.http_headers_only');
+            return new OAuthScopeFilter($app['oauth2-server.authorizer'], $httpHeadersOnly);
         });
 
-        $this->app->bindShared('LucaDegasperi\OAuth2Server\Filters\OAuthOwnerFilter', function () {
-            return new OAuthOwnerFilter();
+        $this->app->bindShared('LucaDegasperi\OAuth2Server\Filters\OAuthOwnerFilter', function ($app) {
+            $httpHeadersOnly = $app['config']->get('oauth2-server-laravel::oauth2.http_headers_only');
+            return new OAuthOwnerFilter($app['oauth2-server.authorizer'], $httpHeadersOnly);
         });
     }
 
