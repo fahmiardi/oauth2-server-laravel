@@ -15,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\ServiceProvider;
 use League\OAuth2\Server\Exception\OAuthException;
 use LucaDegasperi\OAuth2Server\Filters\OAuthFilter;
+use LucaDegasperi\OAuth2Server\Filters\OAuthScopeFilter
 use LucaDegasperi\OAuth2Server\Filters\OAuthOwnerFilter;
 
 class OAuth2ServerServiceProvider extends ServiceProvider
@@ -82,8 +83,12 @@ class OAuth2ServerServiceProvider extends ServiceProvider
             return new OAuthFilter($app['oauth2-server.authorizer'], $httpHeadersOnly);
         });
 
-        $this->app->bindShared('LucaDegasperi\OAuth2Server\Filters\OAuthOwnerFilter', function ($app) {
-            return new OAuthOwnerFilter($app['oauth2-server.authorizer']);
+        $this->app->bindShared('LucaDegasperi\OAuth2Server\Filters\OAuthScopeFilter', function () {
+            return new OAuthScopeFilter();
+        });
+
+        $this->app->bindShared('LucaDegasperi\OAuth2Server\Filters\OAuthOwnerFilter', function () {
+            return new OAuthOwnerFilter();
         });
     }
 
@@ -105,6 +110,7 @@ class OAuth2ServerServiceProvider extends ServiceProvider
     private function bootFilters()
     {
         $this->app['router']->filter('oauth', 'LucaDegasperi\OAuth2Server\Filters\OAuthFilter');
+        $this->app['router']->filter('oauth-scope', 'LucaDegasperi\OAuth2Server\Filters\OAuthScopeFilter');
         $this->app['router']->filter('oauth-owner', 'LucaDegasperi\OAuth2Server\Filters\OAuthOwnerFilter');
     }
 

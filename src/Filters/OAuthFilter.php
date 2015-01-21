@@ -28,12 +28,6 @@ class OAuthFilter
     protected $httpHeadersOnly = false;
 
     /**
-     * The scopes to check for
-     * @var array
-     */
-    protected $scopes = [];
-
-    /**
      * @param Authorizer $authorizer
      * @param bool $httpHeadersOnly
      */
@@ -41,15 +35,6 @@ class OAuthFilter
     {
         $this->authorizer = $authorizer;
         $this->httpHeadersOnly = $httpHeadersOnly;
-    }
-
-    /**
-     * Whether or not the filter will check only the http headers for an access token
-     * @return bool
-     */
-    public function isHttpHeadersOnly()
-    {
-        return $this->httpHeadersOnly;
     }
 
     /**
@@ -62,29 +47,13 @@ class OAuthFilter
     }
 
     /**
-     * Run the oauth filter
-     *
-     * @internal param mixed $route, mixed $request, mixed $scope,...
-     * @return void a bad response in case the request is invalid
+     * The main filter method
+     * @internal param mixed $route, mixed $request, mixed $owners,...
+     * @return null
+     * @throws \League\OAuth2\Server\Exception\AccessDeniedException
      */
     public function filter()
     {
-        if (func_num_args() > 2) {
-            $args = func_get_args();
-            $this->scopes = array_slice($args, 2);
-        }
         $this->authorizer->validateAccessToken($this->httpHeadersOnly);
-        $this->validateScopes();
-    }
-
-    /**
-     * Validate the scopes
-     * @throws \League\OAuth2\Server\Exception\InvalidScopeException
-     */
-    public function validateScopes()
-    {
-        if (!empty($this->scopes) and !$this->authorizer->hasScope($this->scopes)) {
-            throw new InvalidScopeException(implode(',', $this->scopes));
-        }
     }
 }
