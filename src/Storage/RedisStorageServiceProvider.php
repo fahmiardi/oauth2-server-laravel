@@ -46,13 +46,7 @@ class RedisStorageServiceProvider extends ServiceProvider
      */
     public function registerStorageBindings()
     {
-        $redis = new RedisCapsule(array(
-            'default' => array(
-                'host'      => '127.0.0.1',
-                'port'      => 6379,
-                'scheme'    => 'tcp',
-            )
-        ));
+        $redis = new RedisCapsule($this->app['config']->get('database.oauth2-redis'));
         $redis->setAsGlobal();
 
         $this->app->bindShared('Fahmiardi\OAuth2\Server\Storage\Redis\RedisAccessToken', function () {
