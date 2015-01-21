@@ -12,23 +12,9 @@
 namespace LucaDegasperi\OAuth2Server\Filters;
 
 use League\OAuth2\Server\Exception\AccessDeniedException;
-use LucaDegasperi\OAuth2Server\Authorizer;
 
-class OAuthOwnerFilter
+class OAuthOwnerFilter extends OAuthFilter
 {
-    /**
-     * The Authorizer instance
-     * @var \LucaDegasperi\OAuth2Server\Authorizer
-     */
-    protected $authorizer;
-
-    /**
-     * @param Authorizer $authorizer
-     */
-    public function __construct(Authorizer $authorizer)
-    {
-        $this->authorizer = $authorizer;
-    }
 
     /**
      * The main filter method
@@ -40,10 +26,13 @@ class OAuthOwnerFilter
     {
         if (func_num_args() > 2) {
             $ownerTypes = array_slice(func_get_args(), 2);
-            if (!in_array($this->authorizer->getResourceOwnerType(), $ownerTypes)) {
+
+            if (! in_array($this->authorizer->getResourceOwnerType(), $ownerTypes)) {
                 throw new AccessDeniedException();
             }
+
         }
+
         return null;
     }
 }
