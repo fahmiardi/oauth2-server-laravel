@@ -15,7 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\ServiceProvider;
 use League\OAuth2\Server\Exception\OAuthException;
 use LucaDegasperi\OAuth2Server\Filters\OAuthFilter;
-use LucaDegasperi\OAuth2Server\Filters\OAuthScopeFilter
+use LucaDegasperi\OAuth2Server\Filters\OAuthScopeFilter;
 use LucaDegasperi\OAuth2Server\Filters\OAuthOwnerFilter;
 
 class OAuth2ServerServiceProvider extends ServiceProvider
