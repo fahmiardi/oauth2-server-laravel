@@ -33,7 +33,24 @@ class OAuthFilter
      */
     public function __construct(Authorizer $authorizer, $httpHeadersOnly = false)
     {
-        $authorizer->validateAccessToken($this->httpHeadersOnly);
+        if (! function_exists('getallheaders')) {
+            function getallheaders() {
+                foreach ($_SERVER as $key => $value) {
+                    if (substr($key,0,5) == "HTTP_") {
+                        $key = str_replace(" ","-",ucwords(strtolower(str_replace("_"," ",substr($key,5)))));
+                        $out[$key] = $value;
+                    } else {
+                        $out[$key] = $value;
+                    }
+                }
+                return $out;
+            }
+        }
+        
+        $headers = getallheaders();
+        $accessToken = isset($headers['Authorization']) ? trim(preg_replace('/^(?:\s+)?Bearer\s/', '', $headers['Authorization'])) : null;
+        
+        $authorizer->validateAccessToken($this->httpHeadersOnly, $accessToken);
         
         $this->authorizer = $authorizer;
         $this->httpHeadersOnly = $httpHeadersOnly;
