@@ -17,17 +17,22 @@ use Fahmiardi\OAuth2\Server\Storage\Redis\RedisAccessToken;
 use Fahmiardi\OAuth2\Server\Storage\Redis\RedisClient;
 use Fahmiardi\OAuth2\Server\Storage\Redis\RedisScope;
 use Fahmiardi\OAuth2\Server\Storage\Redis\RedisSession;
-
-use Illuminate\Contracts\Exception\Handler;
+use League\OAuth2\Server\Storage\AccessTokenInterface;
+use League\OAuth2\Server\Storage\ClientInterface;
+use League\OAuth2\Server\Storage\ScopeInterface;
+use League\OAuth2\Server\Storage\SessionInterface;
 
 class RedisStorageServiceProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
+     * Bootstrap the application events.
      *
-     * @var bool
+     * @return void
      */
-    protected $defer = false;
+    public function boot()
+    {
+        //
+    }
 
     /**
      * Register the service provider.
@@ -46,22 +51,22 @@ class RedisStorageServiceProvider extends ServiceProvider
      */
     public function registerStorageBindings()
     {
-        $redis = new RedisCapsule($this->app['config']->get('database.oauth2-redis'));
+        $redis = new RedisCapsule(config('database.oauth2-redis'));
         $redis->setAsGlobal();
 
-        $this->app->bindShared('Fahmiardi\OAuth2\Server\Storage\Redis\RedisAccessToken', function () {
+        $this->app->singleton(RedisAccessToken::class, function () {
             return new RedisAccessToken();
         });
 
-        $this->app->bindShared('Fahmiardi\OAuth2\Server\Storage\Redis\RedisClient', function () {
+        $this->app->singleton(RedisClient::class, function () {
             return new RedisClient();
         });
 
-        $this->app->bindShared('Fahmiardi\OAuth2\Server\Storage\Redis\RedisScope', function () {
+        $this->app->singleton(RedisScope::class, function () {
             return new RedisScope();
         });
 
-        $this->app->bindShared('Fahmiardi\OAuth2\Server\Storage\Redis\RedisSession', function () {
+        $this->app->singleton(RedisSession::class, function () {
             return new RedisSession();
         });
     }
@@ -72,10 +77,10 @@ class RedisStorageServiceProvider extends ServiceProvider
      */
     public function registerInterfaceBindings()
     {
-        $this->app->bind('League\OAuth2\Server\Storage\ClientInterface',       'Fahmiardi\OAuth2\Server\Storage\Redis\RedisClient');
-        $this->app->bind('League\OAuth2\Server\Storage\ScopeInterface',        'Fahmiardi\OAuth2\Server\Storage\Redis\RedisScope');
-        $this->app->bind('League\OAuth2\Server\Storage\SessionInterface',      'Fahmiardi\OAuth2\Server\Storage\Redis\RedisSession');
-        $this->app->bind('League\OAuth2\Server\Storage\AccessTokenInterface',  'Fahmiardi\OAuth2\Server\Storage\Redis\RedisAccessToken');
+        $this->app->bind(ClientInterface::class, RedisClient::class);
+        $this->app->bind(ScopeInterface::class, RedisScope::class);
+        $this->app->bind(SessionInterface::class, RedisSession::class);
+        $this->app->bind(AccessTokenInterface::class, RedisAccessToken::class);
     }
 }
- 
+
