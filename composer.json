@@ -28,5 +28,6 @@
             "LucaDegasperi\\OAuth2Server\\": "src"
         }
     },
-    "license": "MIT"
+    "license": "MIT",
+    "minimum-stability": "dev"
 }
