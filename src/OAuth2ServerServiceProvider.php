@@ -13,9 +13,6 @@ namespace LucaDegasperi\OAuth2Server;
 
 use Illuminate\Support\ServiceProvider;
 use League\OAuth2\Server\Exception\OAuthException;
-// use LucaDegasperi\OAuth2Server\Filters\OAuthFilter;
-// use LucaDegasperi\OAuth2Server\Filters\OAuthScopeFilter;
-// use LucaDegasperi\OAuth2Server\Filters\OAuthOwnerFilter;
 use LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware;
 use League\OAuth2\Server\ResourceServer;
 
@@ -38,9 +35,6 @@ class OAuth2ServerServiceProvider extends ServiceProvider
      */
     public function setupConfig()
     {
-        $source = realpath(__DIR__.'/config/oauth2.php');
-        $this->publishes([$source => config_path('oauth2.php')]);
-        $this->mergeConfigFrom($source, 'oauth2');
     }
 
     /**
@@ -60,8 +54,9 @@ class OAuth2ServerServiceProvider extends ServiceProvider
      */
     public function registerAuthorizer()
     {
+        $this->app->configure('oauth2');
 
-        $this->app->singleton('oauth2-server.authorizer', function ($app) {
+        $this->app->bindShared('oauth2-server.authorizer', function ($app) {
             $config = config('oauth2');
             $checker = $app->make(ResourceServer::class);
 
@@ -85,7 +80,7 @@ class OAuth2ServerServiceProvider extends ServiceProvider
      */
     public function registerMiddlewareBindings()
     {
-        $this->app->singleton(OAuthMiddleware::class, function ($app) {
+        $this->app->bindShared(OAuthMiddleware::class, function ($app) {
             $httpHeadersOnly = config('oauth2.http_headers_only');
 
             return new OAuthMiddleware($app['oauth2-server.authorizer'], $httpHeadersOnly);

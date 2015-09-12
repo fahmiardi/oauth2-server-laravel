@@ -51,22 +51,24 @@ class RedisStorageServiceProvider extends ServiceProvider
      */
     public function registerStorageBindings()
     {
+        $this->app->configure('database');
+
         $redis = new RedisCapsule(config('database.oauth2-redis'));
         $redis->setAsGlobal();
 
-        $this->app->singleton(RedisAccessToken::class, function () {
+        $this->app->bindShared(RedisAccessToken::class, function () {
             return new RedisAccessToken();
         });
 
-        $this->app->singleton(RedisClient::class, function () {
+        $this->app->bindShared(RedisClient::class, function () {
             return new RedisClient();
         });
 
-        $this->app->singleton(RedisScope::class, function () {
+        $this->app->bindShared(RedisScope::class, function () {
             return new RedisScope();
         });
 
-        $this->app->singleton(RedisSession::class, function () {
+        $this->app->bindShared(RedisSession::class, function () {
             return new RedisSession();
         });
     }

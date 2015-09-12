@@ -46,6 +46,25 @@ class OAuthMiddleware
     {
         $this->authorizer = $authorizer;
         $this->httpHeadersOnly = $httpHeadersOnly;
+
+        if (! function_exists('getallheaders')) {
+            function getallheaders() {
+                foreach ($_SERVER as $key => $value) {
+                    if (substr($key,0,5) == "HTTP_") {
+                        $key = str_replace(" ","-",ucwords(strtolower(str_replace("_"," ",substr($key,5)))));
+                        $out[$key] = $value;
+                    } else {
+                        $out[$key] = $value;
+                    }
+                }
+                return $out;
+            }
+        }
+
+        $headers = getallheaders();
+        $accessToken = isset($headers['Authorization']) ? trim(preg_replace('/^(?:\s+)?Bearer\s/', '', $headers['Authorization'])) : null;
+
+        $this->authorizer->validateAccessToken($this->httpHeadersOnly, $accessToken);
     }
 
     /**
@@ -69,8 +88,6 @@ class OAuthMiddleware
         }
 
         $this->authorizer->setRequest($request);
-
-        $this->authorizer->validateAccessToken($this->httpHeadersOnly);
         $this->validateScopes($scopes);
 
         return $next($request);
