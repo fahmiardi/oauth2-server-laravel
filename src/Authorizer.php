@@ -58,6 +58,10 @@ class Authorizer
      */
     public function getScopes()
     {
+        if (! $this->checker->getAccessToken()) {
+          trigger_error("Non Access Token Request", E_USER_ERROR);
+        }
+
         return $this->checker->getAccessToken()->getScopes();
     }
 
@@ -68,6 +72,10 @@ class Authorizer
      */
     public function hasScope($scope)
     {
+        if (! $this->checker->getAccessToken()) {
+          trigger_error("Non Access Token Request", E_USER_ERROR);
+        }
+
         return $this->checker->getAccessToken()->hasScope($scope);
     }
 
@@ -77,6 +85,10 @@ class Authorizer
      */
     public function getResourceOwnerId()
     {
+        if (! $this->checker->getAccessToken()) {
+          trigger_error("Non Access Token Request", E_USER_ERROR);
+        }
+
         return $this->checker->getAccessToken()->getSession()->getOwnerId();
     }
 
@@ -86,6 +98,10 @@ class Authorizer
      */
     public function getResourceOwnerType()
     {
+        if (! $this->checker->getAccessToken()) {
+          trigger_error("Non Access Token Request", E_USER_ERROR);
+        }
+
         return $this->checker->getAccessToken()->getSession()->getOwnerType();
     }
 
@@ -95,6 +111,10 @@ class Authorizer
      */
     public function getClientId()
     {
+        if (! $this->checker->getAccessToken()) {
+          trigger_error("Non Access Token Request", E_USER_ERROR);
+        }
+
         return $this->checker->getAccessToken()->getSession()->getClient()->getId();
     }
 
